@@ -7,7 +7,7 @@ import AddContactScreen from "./Screens/AddContactScreen";
 import { useState} from "react";
 import SplashScreen from "./Screens/SplashScreen";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth} from "./firebase";
+
 const Stack = createNativeStackNavigator();
 
 function App() {

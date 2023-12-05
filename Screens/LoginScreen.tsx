@@ -8,37 +8,41 @@ import {
   View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { auth } from "../firebase";
+import { firebaseAuth } from "../firebase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState<Boolean>(false);
   const navigation = useNavigation();
+  const auth = firebaseAuth;
 
- const handleLogin = () => {
-   auth
-     .signInWithEmailAndPassword(email, password)
-     .then((userCredential: { user: any; }) => {
-       const user = userCredential.user;
-       console.log(user);
-     })
-     .catch((error: any) => {
-       console.error(error);
-     });
- };
+  const handleLogin = async() => {
+    setLoading(true);
+    try {
+      const reponse = await signInWithEmailAndPassword(auth, email, password);
+      console.log(reponse);
+    } catch (error: any) {
+      console.error(error);
+      alert('sign in failed: ' + error.message)
+    } finally {
+      setLoading(false);
+    }
+  };
 
- const handleSignup = () => {
-   auth
-     .createUserWithEmailAndPassword(email, password)
-     .then((userCredential: { user: any; }) => {
-       const user = userCredential.user;
-       console.log(user);
-     })
-     .catch((error: any) => {
-       console.error(error);
-     });
- };
-
+  const handleSignup = async () => {
+    setLoading(true);
+    try {
+      const reponse = await createUserWithEmailAndPassword(auth, email, password);
+      console.log(reponse);
+      alert('check your email for confirmation');
+    } catch (error: any) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <KeyboardAvoidingView behavior="height" style={styles.container}>
@@ -60,10 +64,7 @@ const LoginScreen: React.FC = () => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={handleLogin}
-          style={styles.button}
-        >
+        <TouchableOpacity onPress={handleLogin} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
