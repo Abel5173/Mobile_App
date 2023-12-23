@@ -7,38 +7,33 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { firebaseAuth } from "../firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import {
+  createUserWithEmailAndPassword,
+  getReactNativePersistence,
+  initializeAuth,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { login } from "../api/user";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { initializeApp } from "firebase/app";
+import { router } from "expo-router";
+
 
 const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState<Boolean>(false);
-  const navigation = useNavigation();
-  const auth = firebaseAuth;
 
-  const handleLogin = async() => {
+  const handleLogin = async () => {
     setLoading(true);
     try {
-      const reponse = await signInWithEmailAndPassword(auth, email, password);
-      console.log(reponse);
+      const token: any = await login(email, password);
+      await AsyncStorage.setItem("authToken", token);
+      router.push("/(tabs)/EmergencyContacts");
     } catch (error: any) {
       console.error(error);
-      alert('sign in failed: ' + error.message)
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSignup = async () => {
-    setLoading(true);
-    try {
-      const reponse = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(reponse);
-      alert('check your email for confirmation');
-    } catch (error: any) {
-      console.error(error);
+      alert("sign in failed: " + error.message);
     } finally {
       setLoading(false);
     }
@@ -46,7 +41,7 @@ const LoginScreen: React.FC = () => {
 
   return (
     <KeyboardAvoidingView behavior="height" style={styles.container}>
-      <Text style={styles.banner}>Alertify</Text>
+      <Text style={styles.banner}>SOS</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -67,12 +62,18 @@ const LoginScreen: React.FC = () => {
         <TouchableOpacity onPress={handleLogin} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={handleSignup}
-          style={[styles.button, styles.buttonOutline]}
-        >
-          <Text style={styles.buttonOutlineText}>Signup</Text>
-        </TouchableOpacity>
+        <View style={styles.textContainer}>
+          <Text style={styles.textLink}>Don't have an Account? </Text>
+          <Text
+            onPress={() => {
+              setLoading(true);
+              router.push("Signup");
+            }}
+            style={styles.link}
+          >
+            Signup
+          </Text>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -83,7 +84,7 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#4D4A95",
+    backgroundColor: "#f9f9f9",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -91,6 +92,9 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   input: {
+    borderColor: "#FF6464",
+    borderWidth: 2,
+    color: "#000",
     backgroundColor: "#fff",
     paddingHorizontal: 15,
     paddingVertical: 10,
@@ -104,7 +108,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   button: {
-    backgroundColor: "#0782f9",
+    backgroundColor: "#FF6464",
     width: "100%",
     padding: 15,
     borderRadius: 10,
@@ -127,9 +131,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   banner: {
-    color: "#fff",
+    color: "#FF6464",
     fontSize: 30,
     fontWeight: "700",
     marginBottom: 30,
+  },
+  link: {
+    color: "#FF6464",
+    fontWeight: "400",
+    marginTop: 10,
+  },
+  textLink: {
+    color: "#919191",
+    fontWeight: "400",
+    marginTop: 10,
+  },
+  textContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
   },
 });

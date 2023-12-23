@@ -2,14 +2,16 @@ import React, { useEffect, useRef } from "react";
 import { Animated, Dimensions, Image, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Splash from "../assets/Log.png";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 
-const BGColor = "#4D4A95";
+const BGColor = "#F78CA2";
+type NavigationType = NavigationProp<RootStackParamList>;
 
 export default function SplashScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationType>();
   const edges = useSafeAreaInsets();
   const startAnimation = useRef(new Animated.Value(0)).current;
+  const logoOpacity = useRef(new Animated.Value(1)).current;
   const scaleLogo = useRef(new Animated.Value(1)).current;
   const scaleTitle = useRef(new Animated.Value(1)).current;
   const moveLogo = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
@@ -51,8 +53,13 @@ export default function SplashScreen() {
           toValue: 0,
           useNativeDriver: true,
         }),
+        Animated.timing(logoOpacity, {
+          // Added opacity animation
+          toValue: 0, // Fade out the logo
+          useNativeDriver: true,
+        }),
       ]).start(() => {
-        navigation.navigate("Login");
+        navigation.navigate("Start");
       });
     }, 500);
   }, []);
@@ -83,6 +90,7 @@ export default function SplashScreen() {
               { translateY: moveLogo.y },
               { scale: scaleLogo },
             ],
+            opacity: logoOpacity, // Added opacity style
           }}
         ></Animated.Image>
 
@@ -94,6 +102,7 @@ export default function SplashScreen() {
             transform: [{ translateY: moveTitle.y }, { scale: scaleTitle }],
           }}
         >
+          {"Emergency App"}
         </Animated.Text>
       </Animated.View>
     </View>
