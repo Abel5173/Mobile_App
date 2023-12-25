@@ -2,20 +2,23 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StyleSheet } from "react-native";
-
-// type RootStackParamList = {
-//   Home: undefined;
-//   AddContact: undefined;
-// };
-
-// type AddContactScreenNavigationProp = NativeStackNavigationProp<
-//   RootStackParamList,
-//   "AddContact"
-// >;
-
-// type Props = {
-//   navigation: AddContactScreenNavigationProp;
-// };
+import { query, where } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { db, getAuth } from "../../firebase";
+import { ContactItem } from "../../Utils/type";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { addContact } from "../../api/addContacts";
 
 const AddContactScreen = () => {
   const [contactInfo, setContactInfo] = useState({
@@ -24,9 +27,15 @@ const AddContactScreen = () => {
     number: "",
   });
 
-  const handleAddContact = () => {
+  const handleAddContact = async () => {
+    try {
+      await addContact(contactInfo);
+    } catch (error) {
+      console.error("Error adding contact: ", error);
+    }
     console.log("Contact Added:", contactInfo);
   };
+
   const [isFocused1, setIsFocused1] = useState(false);
   const [isFocused2, setIsFocused2] = useState(false);
   const [isFocused3, setIsFocused3] = useState(false);
@@ -104,8 +113,8 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderRadius: 15,
     shadowColor: "#000000",
-    shadowOffset: {width: 8, height: 8},
-    shadowOpacity: 1, 
+    shadowOffset: { width: 8, height: 8 },
+    shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 16,
     backgroundColor: "#fff",

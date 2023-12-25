@@ -15,6 +15,7 @@ type location = {
     longitudeDelta: number,
 }
 
+type DatabaseUID = string;
 
 type User = {
     name: string;
@@ -22,6 +23,24 @@ type User = {
     dob: string;
     password: string;
     phoneNumber: string;
+}
+type IUser = {
+    id: DatabaseUID;
+    name: string;
+    email: string;
+    dob: string;
+    password: string;
+    phoneNumber: string;
+}
+export interface IUserContext {
+    user: IUser | null;
+    setUser: (user: IUser) => void;
+}
+
+export interface ContactItem {
+    name: string;
+    role: string;
+    number: string;
 }
 
 

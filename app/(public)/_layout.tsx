@@ -24,7 +24,17 @@ export class _layout extends Component {
             headerTintColor: "#fff",
           }}
         />
+        <Stack.Screen
+          name="SignUp"
+          options={{
+            headerTitleAlign: "center",
+            title: "Sign Up",
+            headerStyle: { backgroundColor: "#FF6464" },
+            headerTintColor: "#fff",
+          }}
+        />
       </Stack>
+
     );
   }
 }

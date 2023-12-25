@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { firebase } from "../../firebase";
 import {
   View,
   Text,
@@ -61,6 +60,7 @@ const SignUp = () => {
           date,
           name,
           phoneNumber,
+          contact: [],
         };
         try {
           const userRef = await addDoc(collection(db, "users"), data);

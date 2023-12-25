@@ -1,9 +1,5 @@
-import {
-  useNavigation,
-  NavigationProp,
-  NavigationContainer,
-} from "@react-navigation/native";
-import React from "react";
+import { ContactItem } from "../../Utils/type";
+import React, { useEffect, useState } from "react";
 import AddContactScreen from "../(public)/AddContactScreen";
 import {
   View,
@@ -16,16 +12,19 @@ import {
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { router } from "expo-router";
 import { StyleSheet } from "react-native";
+import { getAuth } from "firebase/auth";
+import { doc, getDocs, collection } from "firebase/firestore";
+import { db } from "../../firebase";
 
 const Tab = createBottomTabNavigator();
-type ContactItem = {
+type ContactItems = {
   id: number;
   name: string;
   role: string;
   number: string;
 };
 
-const emergencyContacts: ContactItem[] = [
+const emergencyContacts: ContactItems[] = [
   {
     id: 1,
     name: "Campus Security",
@@ -47,6 +46,33 @@ const emergencyContacts: ContactItem[] = [
 ];
 
 const EmergencyContactsScreen = () => {
+  const [contacts, setContacts] = useState<ContactItem[]>([]);
+
+    useEffect(() => {
+      const fetchContacts = async () => {
+        const user = getAuth().currentUser;
+
+        if (user) {
+          const docRef = doc(db, "users", user.uid); 
+          const snapshot = await getDocs(collection(docRef, "contacts"));
+          const fetchedContacts: ContactItem[] = snapshot.docs.map(
+            (doc) =>
+              ({
+                id: doc.id,
+                ...doc.data(), // Extract data from document
+              } as ContactItem)
+          );
+console.log(fetchedContacts);
+
+          setContacts((prevContacts) => [...prevContacts, ...fetchedContacts]); // Merge fetched contacts with previous contacts
+        } else {
+          console.warn("User not signed in");
+        }
+      };
+
+      fetchContacts();
+    }, []);
+
   const callContact = (number: string) => {
     Linking.openURL(`tel:${number}`);
   };
@@ -64,7 +90,7 @@ const EmergencyContactsScreen = () => {
     <>
       <View style={styles.container}>
         <FlatList
-          data={emergencyContacts}
+          data={[...emergencyContacts, ...contacts]} // Merge static and fetched contacts
           renderItem={renderContactItem}
           keyExtractor={(item) => item.id.toString()}
         />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -18,7 +18,8 @@ import { login } from "../api/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeApp } from "firebase/app";
 import { router } from "expo-router";
-
+import { IUserContext } from "../Utils/type";
+import { UserContext } from "../context/Report/UserContextProvider";
 
 const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -33,7 +34,7 @@ const LoginScreen: React.FC = () => {
       router.push("/(tabs)/EmergencyContacts");
     } catch (error: any) {
       console.error(error);
-      alert("sign in failed: " + error.message);
+      alert("Sign in failed: " + error.message);
     } finally {
       setLoading(false);
     }
@@ -67,7 +68,7 @@ const LoginScreen: React.FC = () => {
           <Text
             onPress={() => {
               setLoading(true);
-              router.push("Signup");
+              router.push("(public)/SignUp)");
             }}
             style={styles.link}
           >
