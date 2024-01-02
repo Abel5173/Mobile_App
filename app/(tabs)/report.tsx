@@ -8,6 +8,7 @@ import {
   GestureResponderEvent,
   ToastAndroid,
   KeyboardAvoidingView,
+  ImageBackground,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { Color } from "../../constants/color";
@@ -25,7 +26,7 @@ import { db } from "../../firebase";
 
 function report() {
   const [selectedItem, setSelectedItem] = useState(null);
-
+  const image = { uri: "../../assets/map.png" };
   const handlePress = (index: any) => {
     setSelectedItem(index);
   };
@@ -68,7 +69,9 @@ function report() {
           location: region,
         };
         const userRef = await addDoc(collection(db, "emergency_report"), data);
-        console.log("Emergency added with ID: ", userRef.id);
+        setSelectedItem(null); // Reset selected icon
+        setContactInfo(""); // Reset input field
+        // console.log("Emergency added with ID: ", userRef.id);
         router.push("/EmergencyContacts");
       } catch (error: any) {
         console.error("Error adding user: ", error);
@@ -121,10 +124,8 @@ function report() {
   ];
   return (
     <KeyboardAvoidingView behavior="height" style={styles.container}>
-      <Text style={[styles.text, { width: "100%", height: "5%" }]}>
-        What Kind of Emergency?
-      </Text>
-      <View style={[styles.icons, { width: "100%", height: "25%" }]}>
+      <Text style={styles.text}>What Kind of Emergency?</Text>
+      <View style={styles.icons}>
         {data.map((item, index) => (
           <View style={styles.iconContainer} key={index}>
             <TouchableOpacity
@@ -146,65 +147,32 @@ function report() {
       <TextInput
         style={[
           styles.input,
-          { width: "95%", height: "10%", alignSelf: "center" },
           isFocused3 && {
             borderWidth: 2,
             borderColor: "#FF6464",
-            width: "90%",
-            height: "10%",
           },
         ]}
         onBlur={() => setIsFocused3(false)}
         onFocus={() => setIsFocused3(true)}
         placeholder="What's the emergency?"
         onChangeText={(text) => setContactInfo(text)}
+        value={contactInfo}
       />
-      <View style={{ width: "100%", height: "60%" }}>
+      <View style={styles.mapContainer}>
         <Pressable onPress={() => router.push("/(public)/mapview")}>
-          <MapView
-            style={styles.map}
-            onRegionChangeComplete={(region) => setEmergencyLocation(region)}
-            provider={PROVIDER_GOOGLE}
-            initialRegion={{
-              latitude: 8.21391,
-              longitude: 37.80249,
-              latitudeDelta: 0.033222,
-              longitudeDelta: 0.012143,
-            }}
-          />
-          <View
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(255, 255, 255, 0.7)",
-              justifyContent: "center",
-              alignItems: "center",
+          {/* <ImageBackground
+            style={styles.mapContainer}
+            source={{
+              uri: "https://firebasestorage.googleapis.com/v0/b/campus-emergency-app-2a6c0.appspot.com/o/map.jpg?alt=media&token=887fd679-250a-4db2-bca8-539cbde6efd7",
             }}
           >
-            <Text
-              style={{
-                color: Color.primary,
-                fontSize: 20,
-              }}
-            >
-              Click to set the location
-            </Text>
-          </View>
+          </ImageBackground> */}
+          <MapView style={styles.mapContainer}>
+          <Text style={styles.map}>Click here to set the location</Text>
+          </MapView>
         </Pressable>
       </View>
-      <View
-        style={[
-          {
-            width: "85%",
-            position: "absolute",
-            bottom: 10,
-            alignSelf: "center",
-          },
-        ]}
-      >
+      <View>
         <Pressable style={styles.button} onPress={handleSubmit}>
           <Text style={styles.setmap}>Report Emergency</Text>
         </Pressable>
@@ -217,8 +185,12 @@ export default report;
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    height: "100%",
+    flex: 1,
+    justifyContent: "space-between",
+  },
+  mapContainer: {
+    height: 305,
+    opacity: 0.75,
   },
   text: {
     color: Color.primary,
@@ -234,16 +206,11 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 60,
-    width: "100%",
     borderColor: "gray",
-    borderRadius: 15,
-    shadowColor: "#000000",
-    shadowOffset: { width: 8, height: 8 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 16,
+    borderRadius: 5,
+    elevation: 1,
     backgroundColor: "#fff",
-    marginBottom: 20,
+    margin: 5,
     paddingHorizontal: 10,
   },
   label: {
@@ -253,6 +220,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   icons: {
+    width: "100%",
+    // height: "35%",
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-evenly",
@@ -271,15 +240,16 @@ const styles = StyleSheet.create({
     flexBasis: "33.33%",
   },
   map: {
-    width: "100%",
-    height: "100%",
+    color: Color.primary,
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 8,
   },
   button: {
-    marginBottom: 25,
     width: "100%",
     padding: 15,
     alignItems: "center",
     backgroundColor: "#FF6464",
-    borderRadius: 50,
   },
 });

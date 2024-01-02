@@ -43,12 +43,37 @@ export interface ContactItem {
     number: string;
 }
 
+export type ContactItems = {
+    id: number;
+    name: string;
+    role: string;
+    number: string;
+    icon: any;
+};
+
+type Report = {
+    id: string;
+    date: string;
+    description: string;
+    location: {
+        latitude: number;
+        longitude: number;
+    };
+    reportType: number;
+};
+
+export interface SafetyTip {
+    tipId: string;
+    img: any;
+    title: string;
+    description: string;
+}
 
 export interface IReport {
     reportType: string | null;
     date: string;
     location: location;
-    description: string | null;
+    description: string;
 }
 
 export type ReportContextType = {

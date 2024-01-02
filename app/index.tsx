@@ -16,6 +16,11 @@ import { Easing } from "react-native-reanimated";
 const Start = () => {
   useEffect(() => {
     checkAuthToken();
+    if (loggedIn) {
+      router.push("/(tabs)/EmergencyContacts");
+    }
+    console.log(loggedIn);
+    
   }, []);
   const [loggedIn, setLoggedIn] = useState(false);
 

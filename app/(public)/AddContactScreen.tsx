@@ -30,6 +30,12 @@ const AddContactScreen = () => {
   const handleAddContact = async () => {
     try {
       await addContact(contactInfo);
+      setContactInfo({
+        name: "",
+        role: "",
+        number: "",
+      });
+      router.back();
     } catch (error) {
       console.error("Error adding contact: ", error);
     }
@@ -57,7 +63,7 @@ const AddContactScreen = () => {
         />
       </View>
       <View style={{ width: "100%" }}>
-        <Text style={styles.label}>Role</Text>
+        <Text style={styles.label}>Relation</Text>
         <TextInput
           style={[
             styles.input,
