@@ -37,7 +37,7 @@ const AddContactScreen = () => {
       });
       router.back();
     } catch (error) {
-      console.error("Error adding contact: ", error);
+      console.error("error adding contact: ", error);
     }
     console.log("Contact Added:", contactInfo);
   };
@@ -114,15 +114,11 @@ const styles = StyleSheet.create({
     color: "#FF6464",
   },
   input: {
-    height: 40,
+    height: 50,
     width: "100%",
     borderColor: "gray",
-    borderRadius: 15,
-    shadowColor: "#000000",
-    shadowOffset: { width: 8, height: 8 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 16,
+    borderRadius: 5,
+    elevation: 5,
     backgroundColor: "#fff",
     marginBottom: 20,
     paddingHorizontal: 10,

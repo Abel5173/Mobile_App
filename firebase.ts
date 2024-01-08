@@ -6,12 +6,12 @@ import firebase from 'firebase/compat/app'
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDTfkPpRXCTKYjRtI1OPsYxG01rHeU7JbQ",
-    authDomain: "campus-emergency-app-2a6c0.firebaseapp.com",
-    projectId: "campus-emergency-app-2a6c0",
-    storageBucket: "campus-emergency-app-2a6c0.appspot.com",
-    messagingSenderId: "1048629240458",
-    appId: "1:1048629240458:web:3a51fc0ce5d9b21031c373"
+    apiKey: "AIzaSyB1s-LeQ6qhpMsclipdPulbtVhXDUmQKe0",
+    authDomain: "campus-emergency-app-6b3ad.firebaseapp.com",
+    projectId: "campus-emergency-app-6b3ad",
+    storageBucket: "campus-emergency-app-6b3ad.appspot.com",
+    messagingSenderId: "695342511426",
+    appId: "1:695342511426:web:d4aff6dbca81f30f7884db"
 };
 
 

@@ -65,7 +65,7 @@ export default () => {
           ),
           title: "Tips",
           headerTitleAlign: "center",
-          headerTitle: "Safty Tips",
+          headerTitle: "Safety Tips",
           headerStyle: { backgroundColor: "#FF6464" },
           headerTintColor: "#fff",
         }}

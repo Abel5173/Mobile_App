@@ -7,16 +7,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
-import {
-  createUserWithEmailAndPassword,
-  getReactNativePersistence,
-  initializeAuth,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
 import { login } from "../api/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { initializeApp } from "firebase/app";
 import { router } from "expo-router";
 import { IUserContext } from "../Utils/type";
 import { UserContext } from "../context/Report/UserContextProvider";
@@ -28,18 +20,50 @@ const LoginScreen: React.FC = () => {
 
   const handleLogin = async () => {
     setLoading(true);
+
+    const isEmailValid = (email: string) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
+
+    if (!email || !isEmailValid(email)) {
+      alert("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
+    if (!password || password.length < 6) {
+      alert("Please enter a password with at least 6 characters.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const token: any = await login(email, password);
-      await AsyncStorage.setItem("authToken", token);
-      router.push("/(tabs)/EmergencyContacts");
+      if (token != null) {
+        await AsyncStorage.setItem("authToken", token);
+        router.push("/(tabs)/EmergencyContacts");
+      } else {
+        alert("Sign in failed. Check your email or password and try again.");
+        // Clear input fields on failed sign-in attempt
+        setEmail("");
+        setPassword("");
+      }
     } catch (error: any) {
+      // Clear input fields on error
+      setEmail("");
+      setPassword("");
+      // Handle the error if necessary (e.g., display an error message)
       console.error(error);
-      alert("Sign in failed: " + error.message);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSignUp = () => {
+    console.log("Sign Up");
+    router.push("/(public)/SignUp");
+  };
   return (
     <KeyboardAvoidingView behavior="height" style={styles.container}>
       <Text style={styles.banner}>SOS</Text>
@@ -68,7 +92,7 @@ const LoginScreen: React.FC = () => {
           <Text
             onPress={() => {
               setLoading(true);
-              router.push("(public)/SignUp)");
+              handleSignUp();
             }}
             style={styles.link}
           >

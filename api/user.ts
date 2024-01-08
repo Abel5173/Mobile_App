@@ -1,18 +1,19 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { getAuth } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, UserCredential } from "firebase/auth";
 
-export const login = async (email: string, password: string) => {
+export const login = async (email: string, password: string): Promise<string | null> => {
   try {
     const auth = getAuth();
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    const id = userCredential.user.uid;
-    const token = await userCredential.user.getIdToken();
-    return token;
+    const userCredential: UserCredential = await signInWithEmailAndPassword(auth, email, password);
+
+    if (userCredential?.user) {
+      const token = await userCredential.user.getIdToken();
+      return token;
+    } else {
+      console.error('Authentication error: User information not available.');
+      return null;
+    }
   } catch (error: any) {
-    console.log(error);
+    alert("Sign in failed. Check your email or password and try again.");
+    return null;
   }
 };

@@ -22,7 +22,7 @@ export const useFetchSafetyTip = () => {
             });
             setSafetyTip(fetchedSafetyTip);
         });
-    }, [])
+    }, [safetyTip])
 
     return safetyTip;
 }

@@ -43,7 +43,7 @@ function _layout() {
         }}
       />
       <Stack.Screen
-        name="[SaftyTips]"
+        name="[SafetyTips]"
         options={{
           headerTitleAlign: "center",
           title: "Safety Tips",

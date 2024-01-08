@@ -9,16 +9,13 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
 import { Color } from "../../constants/color";
 import { ContactItems } from "../../Utils/type";
+import { getAuth } from "firebase/auth";
+import { query, collection, where, getDocs, doc, onSnapshot, Firestore } from "firebase/firestore";
+import { db } from "../../firebase";
 
 const EmergencyContactsScreen = () => {
-  useEffect(() => {
-    Animated.timing(animation, {
-      toValue: 1,
-      duration: 1000, // Adjust the duration as needed
-      useNativeDriver: true,
-    }).start(); // Start the animation
-  }, []); // Empty dependency array ensures the effect runs once on component mount
-
+  const [animation] = useState(new Animated.Value(0));
+  const [contacts, setContacts] = useState<ContactItems[]>([]);
   const emergencyContacts: ContactItems[] = [
     {
       id: 1,
@@ -54,9 +51,42 @@ const EmergencyContactsScreen = () => {
       ),
     },
   ];
-  const [animation] = useState(new Animated.Value(0));
-  const contacts = useFetchContacts();
+  const fetchUserData = async () => {
+    const user = getAuth().currentUser;
+    if (user) {
+      const q = query(
+        collection(db as Firestore, "users"),
+        where("uid", "==", user.uid)
+      );
 
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const updatedContacts: ContactItems[] = [];
+        querySnapshot.forEach((doc) => {
+          const id = doc.id;
+          const data = doc.data();
+          const contactsData = data?.contacts || [];
+          updatedContacts.push(...contactsData);
+        });
+        setContacts(updatedContacts);
+      });
+
+      return () => {
+        unsubscribe();
+      };
+    } else {
+      console.warn("User not signed in");
+    }
+        };
+  useEffect(() => {
+    Animated.timing(animation, {
+      toValue: 1,
+      duration: 1000, // Adjust the duration as needed
+      useNativeDriver: true,
+    }).start()
+  fetchUserData();
+  console.log(contacts);
+  }, [animation]); 
+  
   const callContact = (number: string) => {
     Linking.openURL(`tel:${number}`);
   };

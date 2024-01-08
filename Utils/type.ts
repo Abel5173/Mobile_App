@@ -17,18 +17,18 @@ type location = {
 
 type DatabaseUID = string;
 
-type User = {
+export type User = {
     name: string;
     email: string;
     dob: string;
     password: string;
     phoneNumber: string;
 }
-type IUser = {
+export type IUser = {
     id: DatabaseUID;
     name: string;
     email: string;
-    dob: string;
+    date: string;
     password: string;
     phoneNumber: string;
 }

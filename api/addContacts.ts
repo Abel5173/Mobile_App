@@ -23,17 +23,24 @@ export const fetchUserContacts = async () => {
     return [];
 };
 export const addContact = async (contactInfo: ContactItem) => {
-    const user = getAuth().currentUser;
-    if (user) {
-        const q = query(collection(db, "users"), where("uid", "==", user.uid));
-        const querySnapshot = await getDocs(q);
-        const id = querySnapshot.docs[0].id;
-        const docRef = doc(db, "users", id);
-        await updateDoc(docRef, {
-            contacts: arrayUnion(contactInfo),
-        });
-        console.log("Contact added successfully");
-    } else {
-        console.warn("User not signed in");
+    try {
+        const user = getAuth().currentUser;
+        console.log(user?.uid);
+
+        if (user) {
+            const q = query(collection(db, "users"), where("uid", "==", user.uid));
+            const querySnapshot = await getDocs(q);
+            console.log(querySnapshot.docs.length);
+            const id = querySnapshot.docs[0].id;
+            const docRef = doc(db, "users", id);
+            await updateDoc(docRef, {
+                contacts: arrayUnion(contactInfo),
+            });
+            console.log("Contact added successfully");
+        } else {
+            console.warn("User not signed in");
+        }
+    } catch (error) {
+        console.error("Error adding contact", error);
     }
 };

@@ -12,13 +12,13 @@ const ReportMapView = () => {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
-  const {report, setReport} = useContext(ReportContext) as ReportContextType;
+  const { report, setReport } = useContext(ReportContext) as ReportContextType;
   const setLocation = () => {
     setReport({
       ...report,
       location: emergencyLocation,
     });
-    ToastAndroid.show("Location Set", ToastAndroid.SHORT)
+    ToastAndroid.show("Location Set", ToastAndroid.SHORT);
     router.push("/(tabs)/report");
     console.log(report);
   };
@@ -32,7 +32,18 @@ const ReportMapView = () => {
         initialRegion={emergencyLocation}
       >
         {emergencyLocation !== undefined && (
-          <Marker coordinate={emergencyLocation} />
+          <Marker
+            draggable
+            coordinate={emergencyLocation}
+            onDragEnd={(region) =>
+              setEmergencyLocation({
+                latitude: region.nativeEvent.coordinate.latitude,
+                longitude: region.nativeEvent.coordinate.longitude,
+                latitudeDelta: 0.0922, 
+                longitudeDelta: 0.0421,
+              })
+            }
+          />
         )}
       </MapView>
       <View style={styles.buttonContainer}>

@@ -62,22 +62,34 @@ function report() {
         longitude: report.location.longitude,
       };
       try {
-        const data = {
-          reportType: selectedItem,
+        const dataReport = {
+          reportType: data[selectedItem].lable,
           date: new Date().toDateString(),
           description: contactInfo,
           location: region,
         };
-        const userRef = await addDoc(collection(db, "emergency_report"), data);
-        setSelectedItem(null); // Reset selected icon
-        setContactInfo(""); // Reset input field
-        // console.log("Emergency added with ID: ", userRef.id);
+        const userRef = await addDoc(
+          collection(db, "emergency_report"),
+          dataReport
+        );
+        setSelectedItem(null); 
+        setContactInfo(""); 
+        console.log("Emergency added with ID: ", dataReport.reportType);
         router.push("/EmergencyContacts");
       } catch (error: any) {
         console.error("Error adding user: ", error);
       }
     }
   };
+
+  useEffect(() => {
+setEmergencyLocation({
+  latitude: 8.21391,
+  longitude: 37.80249,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+});
+  }, [])
 
   const data = [
     {
@@ -167,8 +179,11 @@ function report() {
             }}
           >
           </ImageBackground> */}
-          <MapView style={styles.mapContainer}>
-          <Text style={styles.map}>Click here to set the location</Text>
+          <MapView
+            initialRegion={emergencyLocation || undefined}
+            style={styles.mapContainer}
+          >
+            <Text style={styles.map}>Click here to set the location</Text>
           </MapView>
         </Pressable>
       </View>

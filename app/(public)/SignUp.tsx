@@ -37,7 +37,7 @@ const SignUp = () => {
       setDOB(currentDate);
       if (Platform.OS === "android") {
         toggleDatePicker();
-        setDate(currentDate.toDateString()); // Format date for display
+        setDate(currentDate.toDateString());
       }
     } else {
       toggleDatePicker();
@@ -55,7 +55,7 @@ const SignUp = () => {
       .then(async (response) => {
         const uid = response.user?.uid;
         const data = {
-          id: uid,
+          uid: uid,
           email,
           date,
           name,

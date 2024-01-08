@@ -1,4 +1,4 @@
-import { getAuth, updateProfile } from "firebase/auth"
+import { User, getAuth, updateProfile } from "firebase/auth"
 // import User from "../Utils/type"
 
 const auth = getAuth();
@@ -7,7 +7,7 @@ function update(user: User) {
     if(currentUser) {
         updateProfile(currentUser, {
             displayName: "Jane Q. User",
-            phoneNumber: '09123456789',
+            // phoneNumber: '09123456789',
 
         }).then(() => {
             console.log('User updated!');
