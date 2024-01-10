@@ -20,9 +20,10 @@ import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { ReportContext } from "../../context/Report/ReportContexProvider";
 import { IReport, ReportContextType } from "../../Utils/type";
 import { router } from "expo-router";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { db } from "../../firebase";
+import * as Notifications from "expo-notifications";
 
 function report() {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -41,6 +42,46 @@ function report() {
 
   const handleMap = () => {
     router.push("../(public)/mapview)");
+  };
+
+  const sendNotification = async () => {
+    try {
+      // Retrieve all users with the role "employee"
+      const employeeUsersRef = query(collection(db, "users"));
+      const employeeUsersSnapshot = await getDocs(employeeUsersRef);
+
+      // Iterate through employee users and send notifications
+      employeeUsersSnapshot.forEach(async (userDoc) => {
+        console.log("userDoc.data(); ", userDoc.data());
+        if (userDoc.data().deviceToken) {
+          const { deviceToken } = userDoc.data();
+
+          console.log("retoken ", deviceToken);
+          // console.log("token ",token);
+          try {
+            console.log("token ", deviceToken);
+            await Notifications.scheduleNotificationAsync({
+              content: {
+                to: deviceToken,
+                title: "New Emergency Alert!!!",
+                body: "Someone Needs Help.",
+                data: {
+                  data: "HELP!!!",
+                  icon: "🌟", // Add your desired icon or use emojis
+                  date: new Date().toLocaleDateString(), // Add the current date
+                },
+                sound: "default",
+              },
+              trigger: { seconds: 2 },
+            });
+          } catch (error) {
+            console.error("Error scheduling notification:", error);
+          }
+        }
+      });
+    } catch (error) {
+      console.error("Error sending notifications to employees:", error);
+    }
   };
 
   const handleSubmit = async () => {
@@ -72,9 +113,10 @@ function report() {
           collection(db, "emergency_report"),
           dataReport
         );
-        setSelectedItem(null); 
-        setContactInfo(""); 
+        setSelectedItem(null);
+        setContactInfo("");
         console.log("Emergency added with ID: ", dataReport.reportType);
+        sendNotification();
         router.push("/EmergencyContacts");
       } catch (error: any) {
         console.error("Error adding user: ", error);
@@ -83,13 +125,13 @@ function report() {
   };
 
   useEffect(() => {
-setEmergencyLocation({
-  latitude: 8.21391,
-  longitude: 37.80249,
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421,
-});
-  }, [])
+    setEmergencyLocation({
+      latitude: 8.21391,
+      longitude: 37.80249,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    });
+  }, []);
 
   const data = [
     {

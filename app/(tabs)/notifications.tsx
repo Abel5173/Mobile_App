@@ -1,10 +1,13 @@
-import { Pressable, StyleSheet, Text, ToastAndroid, View } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import { StyleSheet, Text, ToastAndroid, View } from "react-native";
+import React, { useState } from "react";
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
-import { ReportContext } from "../../context/Report/ReportContexProvider";
-import { ReportContextType } from "../../Utils/type";
-import { router } from "expo-router";
 import { useFetchReport } from "../../api/fetchReport";
+import {
+  MaterialCommunityIcons,
+  FontAwesome5,
+  SimpleLineIcons,
+} from "@expo/vector-icons";
+import { Color } from "../../constants/color";
 
 const tips = () => {
   const [emergencyLocation, setEmergencyLocation] = useState({
@@ -15,6 +18,23 @@ const tips = () => {
   });
 
   const reports = useFetchReport(); 
+const getMarkerIcon = (reportType: string | null) => {
+  switch (reportType) {
+    case "Fire":
+      return require("../../assets/fire.png");
+    case "Security":
+      return require("../../assets/Security.png");
+    case "Medic":
+      return require("../../assets/Medic.png");
+
+    case "Disasters":
+      return require("../../assets/disaster.png");
+    case "Other":
+      return require("../../assets/sos.png");
+    default:
+      return require("../../assets/sos.png");
+  }
+};
 
   return (
     <View style={{ flex: 1 }}>
@@ -31,7 +51,9 @@ const tips = () => {
               latitude: report.location.latitude,
               longitude: report.location.longitude,
             }}
-            title={report.description}
+            title={report.reportType || undefined}
+            description={report.description}
+            icon={getMarkerIcon(report.reportType)}
           />
         ))}
       </MapView>

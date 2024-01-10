@@ -1,14 +1,17 @@
-import { Tabs } from "expo-router"
-import { Feather } from '@expo/vector-icons';
+import { Tabs, router } from "expo-router";
+import { Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Foundation } from "@expo/vector-icons";
 import { useFetchReport } from "../../api/fetchReport";
+import { useState } from "react";
 
 export default () => {
+  const [notificationsVisited, setNotificationsVisited] = useState(false);
+
   const reports = useFetchReport();
-  const unreadCount = reports.length; 
-  
+  const unreadCount = reports.length;
+
   return (
     <Tabs
       screenOptions={{
@@ -49,12 +52,23 @@ export default () => {
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="notification" size={18} color={color} />
           ),
-          tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
+          tabBarBadge: notificationsVisited
+            ? undefined
+            : unreadCount > 0
+            ? unreadCount
+            : undefined,
           title: "Notifications",
           headerTitleAlign: "center",
           headerTitle: "Notifications",
           headerStyle: { backgroundColor: "#FF6464" },
           headerTintColor: "#fff",
+        }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            setNotificationsVisited(true);
+            router.push("notifications");
+          },
         }}
       />
       <Tabs.Screen
@@ -85,4 +99,4 @@ export default () => {
       />
     </Tabs>
   );
-}
+};
