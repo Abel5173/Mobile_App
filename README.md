@@ -17,9 +17,9 @@ This application includes the following screens, each with its specific function
 1. **Emergency Contacts:** Quick access to important campus and local emergency contacts.
 2. **Report Emergency:** A feature to report emergencies directly from the app.
 3. **Safety Tips:** Helpful tips and guidelines to stay safe on campus.
-4. **Emergency Map:** A map displaying emergency locations such as exits and assembly points.
-5. **Notifications:** Timely notifications about safety and emergency updates.
-8. **Settings:** Customize app settings according to personal preferences.
+4. **Emergency Map:** A map displaying emergency location points.
+5. **Notifications:** Timely notifications about emergency updates.
+8. **Settings:** Profile Edit and logout.
 
 ### UI Elements
 - **Buttons:** Such as 'Call Emergency Services' and 'Report Incident' for quick actions.
